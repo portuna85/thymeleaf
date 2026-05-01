@@ -28,7 +28,8 @@ public class FormItemController {
 
     @GetMapping("/{itemId}")
     public String item(@PathVariable long itemId, Model model) {
-        Item item = itemRepository.findById(itemId);
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new IllegalArgumentException("Item not found. id=" + itemId));
         model.addAttribute("item", item);
         return "form/item";
     }
@@ -42,7 +43,7 @@ public class FormItemController {
 
     @PostMapping("/add")
     public String addItem(@ModelAttribute Item item, RedirectAttributes redirectAttributes) {
-        log.info("item.getOpen = {}", item.getOpen());
+        log.debug("item.getOpen = {}", item.getOpen());
         Item savedItem = itemRepository.save(item);
         redirectAttributes.addAttribute("itemId", savedItem.getId());
         redirectAttributes.addAttribute("status", true);
@@ -51,7 +52,8 @@ public class FormItemController {
 
     @GetMapping("/{itemId}/edit")
     public String editForm(@PathVariable Long itemId, Model model) {
-        Item item = itemRepository.findById(itemId);
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new IllegalArgumentException("Item not found. id=" + itemId));
         model.addAttribute("item", item);
         return "form/editForm";
     }
